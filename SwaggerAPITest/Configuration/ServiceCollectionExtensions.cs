@@ -8,5 +8,6 @@ public static class ServiceCollectionExtensions
     public static void ConfigureService(this IServiceCollection services)
     {
         services.AddSingleton<IAtmService, AtmService>();
+        services.AddSingleton<IBankService, BankService>();
     }
 }
