@@ -6,8 +6,11 @@ namespace SwaggerAPITest.Services;
 
 public class BankService : IBankService
 {
-    private decimal TotalAmountVisa { get; } = 200;
-    private decimal TotalAmountMasterCard { get; } = 300;
+    private static readonly IReadOnlyCollection<CardBrandLimit> WithdrawLimits= new List<CardBrandLimit> 
+    {
+        new(CardBrands.Visa, 200),
+        new(CardBrands.MasterCard, 300)
+    };
 
     private static readonly IReadOnlyCollection<Card> Cards = new List<Card>
     {
@@ -27,9 +30,15 @@ public class BankService : IBankService
         => GetCard(cardNumber)
         .GetBalance();
 
+    private static decimal GetWithdrawLimit(CardBrands cardBrand)
+    {
+        return WithdrawLimits.First(x => x.CardBrand == cardBrand).Amount;
+    } 
+
     public void Withdraw(string cardNumber, decimal amount)
     {
         var card = GetCard(cardNumber);
+        var limit = GetWithdrawLimit(card.Brand);
 
         if (amount <= 0)
         {
@@ -41,23 +50,12 @@ public class BankService : IBankService
             throw new ArgumentOutOfRangeException("Amount for withdraw biger than current balance!");
         }
 
-        switch (card.Brand)
+        if (amount  > limit)
         {
-            case CardBrands.Visa:
-                if (amount >= TotalAmountVisa)
-                {
-                    throw new InvalidOperationException($"One time {card.Brand} withdraw limit is {TotalAmountVisa}");
-                }
-                break;
-            case CardBrands.MasterCard:
-                if (amount >= TotalAmountMasterCard)
-                {
-                    throw new InvalidOperationException($"One time {card.Brand} withdraw limit is {TotalAmountMasterCard}");
-                }
-                break;
-            default:
-                break;
+            throw new InvalidOperationException($"One time {card.Brand} withdraw limit is {limit}");
         }
+
+        card.Withdraw(amount);
     }
 };
 

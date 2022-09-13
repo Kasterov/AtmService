@@ -7,31 +7,31 @@ namespace SwaggerAPITest.Services;
 public class AtmService : IAtmService
 {
     private readonly IBankService _bankService;
-
+    private decimal TotalAmount { get; set; } = 10_000;
     public AtmService(IBankService bankService)
     {
         _bankService = bankService;
     }
 
-    private decimal TotalAmount { get; } = 10_000;
+    public bool IsCardExist(string cardNumber) => 
+        _bankService.IsCardExist(cardNumber);
 
-    public bool IsCardExist(string cardNumber) => _bankService.IsCardExist(cardNumber);
+    public bool VerifyPassword(string cardNumber, string password) => 
+        _bankService.VerifyPassword(cardNumber, password);
 
-    public bool VerifyPassword(string cardNumber, string password) => _bankService.VerifyPassword(cardNumber, password);
-
-    private Card GetCard(string cardNumber) => _bankService.GetCard(cardNumber);
-
-    public decimal GetCardBalance(string cardNumber) => _bankService.GetCardBalance(cardNumber);
+    public decimal GetCardBalance(string cardNumber) => 
+        _bankService.GetCardBalance(cardNumber);
 
     public void Withdraw(string cardNumber, decimal amount)
-    {
-        _bankService.Withdraw(cardNumber, amount);
+    {      
 
         if (amount > TotalAmount)
         {
             throw new ArgumentOutOfRangeException("Amount for withdraw biger than current ATM balance!");
         }
+        
+        _bankService.Withdraw(cardNumber, amount);
 
-        GetCard(cardNumber).Withdraw(amount);
+        TotalAmount -= amount;
     }
 }
