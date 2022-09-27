@@ -7,7 +7,7 @@ namespace SwaggerAPITest.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class AtmController : Controller
+public class AtmController : ControllerBase
 {
     private readonly IAtmService _atmService;
 

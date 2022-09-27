@@ -5,19 +5,21 @@ namespace SwaggerAPITest.Models;
 
 public class Card
 {
-    public string CardNumber { get; }
-    public string UserName { get; }
-    public string Password { get; }
-    public CardBrands Brand { get; }
+    public int Id { get; set; }
+    public string CardNumber { get; set; }
+    public string UserName { get; set; }
+    public string Password { get; set; }
+    public CardBrands CardBrand { get; set; }
 
     public decimal Balance { get; set; }
 
+    public Card() {}
     public Card(string cardNumber, string userName, string password, CardBrands cardBrands, decimal balance)
     {
         CardNumber = cardNumber;
         UserName = userName;
         Password = password;
-        Brand = cardBrands;
+        CardBrand = cardBrands;
         Balance = balance;  
     }
     public decimal Withdraw(decimal amount) => Balance -= amount;

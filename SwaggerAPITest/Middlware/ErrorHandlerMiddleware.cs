@@ -26,6 +26,18 @@ public class ErrorHandlerMiddleware
                 .WithStatusCode(Status422UnprocessableEntity)
                 .WithJsonContent(ex.Message);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            await context.Response
+                .WithStatusCode(Status401Unauthorized)
+                .WithJsonContent(ex.Message);
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            await context.Response
+                .WithStatusCode(Status416RangeNotSatisfiable)
+                .WithJsonContent(ex.Message);
+        }
         catch (Exception ex)
         {
             await context.Response
