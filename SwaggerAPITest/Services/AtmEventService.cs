@@ -19,7 +19,18 @@ public sealed class AtmEventService : IAtmService
 
         _broker.AppendEvent(cardNumber, new BalanceEvent());
         return _atm.GetCardBalance(cardNumber);
-    } 
+    }
+
+    public void AddAmount(string cardNumber, decimal amount)
+    {
+        if (_broker.GetLastEvent(cardNumber) is not AuthorizeEvent)
+        {
+            throw new UnauthorizedAccessException("Pass identification and authorization!"); 
+        }
+
+        _atm.AddAmount(cardNumber, amount);
+        _broker.AppendEvent(cardNumber, new AddAmountEvent());
+    }
 
     public bool IsCardExist(string cardNumber)
     {
@@ -32,6 +43,18 @@ public sealed class AtmEventService : IAtmService
         }
         throw new UnauthorizedAccessException("Pass identification and authorization!");
     }
+
+    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
+    {
+        if (_broker.GetLastEvent(cardNumberSender) is not AuthorizeEvent)
+        {
+            throw new UnauthorizedAccessException("Pass identification and authorization!");
+        }
+
+        _atm.Tranzaction(cardNumberSender, cardNumberReceiver, amount);
+        _broker.AppendEvent(cardNumberSender, new TranzactionEvent());
+    }
+
     public bool VerifyPassword(string cardNumber, string cardPassword)
     {
         if (_broker.FindEvent<InitEvent>(cardNumber) is { }

@@ -32,6 +32,13 @@ public class AtmController : ControllerBase
             : NotFound(new AtmResponse("Authorization is NOT successful!"));
     }
 
+    [HttpPost("cards/addAmount")]
+    public IActionResult AddAmount([FromBody] CardAddAmountRequest request)
+    {
+        _atmService.AddAmount(request.CardNumber, request.Amount);
+        return Ok(new AtmResponse($"AddAmount is successful! +{request.Amount}"));
+    }
+
     [HttpPost("cards/withdraw")]
     public IActionResult Withdraw([FromBody] CardWithdrawRequest request)
     {
@@ -43,5 +50,12 @@ public class AtmController : ControllerBase
     public IActionResult GetBalance([FromRoute] string cardNumber)
     {
         return Ok(new AtmResponse($"GetBalance is successful! Balance:{_atmService.GetCardBalance(cardNumber)}"));
+    }
+
+    [HttpPost("cards/tranzaction")]
+    public IActionResult Tranzaction([FromBody] CardTranzactionRequest request)
+    {
+        _atmService.Tranzaction(request.CardNumberSender, request.CardNumberReceiver, request.Amount);
+        return Ok(new AtmResponse($"Tranzaction is successful!Amount sent: {request.Amount} to card: {request.CardNumberReceiver}"));
     }
 }

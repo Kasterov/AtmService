@@ -56,5 +56,16 @@ public class BankService : IBankService
 
         card.Withdraw(amount);
     }
+
+    public void AddAmount(string cardNumber, decimal amount)
+    {
+        var cardToAdd = GetCard(cardNumber);
+        cardToAdd.AddAmount(amount);
+    }
+    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
+    {
+        Withdraw(cardNumberSender, amount);
+        AddAmount(cardNumberReceiver, amount);
+    }
 };
 

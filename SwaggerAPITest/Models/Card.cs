@@ -26,6 +26,8 @@ public class Card
 
     public decimal GetBalance() => Balance;
 
+    public decimal AddAmount(decimal amount) => Balance += amount;
+
     public bool IsPasswordEqual(string password) => password == Password;
 }
 

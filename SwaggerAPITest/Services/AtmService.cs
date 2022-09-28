@@ -33,16 +33,25 @@ public class AtmService : IAtmService
         }
 
         throw new UnauthorizedAccessException("Pass identification and authorization!");
-    }
-
-    
-       
+    }  
 
     public void Withdraw(string cardNumber, decimal amount)
     {
         _bankService.Withdraw(cardNumber, amount);
 
         TotalAmount -= amount;
+    }
+
+    public void AddAmount(string cardNumber, decimal amount)
+    {
+        _bankService.AddAmount(cardNumber, amount);
+
+        TotalAmount += amount;
+    }
+
+    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
+    {
+        _bankService.Tranzaction(cardNumberSender, cardNumberReceiver, amount);
     }
 }
     
