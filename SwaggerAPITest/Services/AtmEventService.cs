@@ -21,14 +21,14 @@ public sealed class AtmEventService : IAtmService
         return _atm.GetCardBalance(cardNumber);
     }
 
-    public async Task AddAmount(string cardNumber, decimal amount)
+    public void AddAmount(string cardNumber, decimal amount)
     {
         if (_broker.GetLastEvent(cardNumber) is not AuthorizeEvent)
         {
             throw new UnauthorizedAccessException("Pass identification and authorization!"); 
         }
 
-        await _atm.AddAmount(cardNumber, amount);
+         _atm.AddAmount(cardNumber, amount);
         _broker.AppendEvent(cardNumber, new AddAmountEvent());
     }
 
@@ -44,14 +44,14 @@ public sealed class AtmEventService : IAtmService
         throw new UnauthorizedAccessException("Pass identification and authorization!");
     }
 
-    public async Task Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
+    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
     {
         if (_broker.GetLastEvent(cardNumberSender) is not AuthorizeEvent)
         {
             throw new UnauthorizedAccessException("Pass identification and authorization!");
         }
 
-        await _atm.Tranzaction(cardNumberSender, cardNumberReceiver, amount);
+        _atm.Tranzaction(cardNumberSender, cardNumberReceiver, amount);
         _broker.AppendEvent(cardNumberSender, new TranzactionEvent());
     }
 
@@ -67,7 +67,7 @@ public sealed class AtmEventService : IAtmService
         throw new UnauthorizedAccessException("Pass identification and authorization!");
     }
     
-    public async Task Withdraw(string cardNumber, decimal amount)
+    public void Withdraw(string cardNumber, decimal amount)
     {
         if (_broker.GetLastEvent(cardNumber) is not AuthorizeEvent)
         {
@@ -76,7 +76,7 @@ public sealed class AtmEventService : IAtmService
 
         _broker.AppendEvent(cardNumber, new WithdrawEvent());
 
-        await _atm.Withdraw(cardNumber, amount);
+        _atm.Withdraw(cardNumber, amount);
     }
     
 }

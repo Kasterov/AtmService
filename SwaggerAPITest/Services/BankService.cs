@@ -37,7 +37,7 @@ public class BankService : IBankService
         return WithdrawLimits.First(x => x.CardBrand == cardBrand).Amount;
     }
 
-    public async Task Withdraw(string cardNumber, decimal amount)
+    public void Withdraw(string cardNumber, decimal amount)
     {
         var card = GetCard(cardNumber);
         var limit = GetWithdrawLimit(card.CardBrand);
@@ -58,20 +58,20 @@ public class BankService : IBankService
         }
 
         card.Withdraw(amount);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChangesAsync();
     }
 
-    public async Task AddAmount(string cardNumber, decimal amount)
+    public void AddAmount(string cardNumber, decimal amount)
     {
         var cardToAdd = GetCard(cardNumber);
         cardToAdd.AddAmount(amount);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChangesAsync();
     }
-    public async Task Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
+    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
     {
         Withdraw(cardNumberSender, amount);
         AddAmount(cardNumberReceiver, amount);
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChangesAsync();
     }
 };
 

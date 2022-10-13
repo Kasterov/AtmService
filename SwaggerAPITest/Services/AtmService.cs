@@ -35,23 +35,23 @@ public class AtmService : IAtmService
         throw new UnauthorizedAccessException("Pass identification and authorization!");
     }  
 
-    public async Task Withdraw(string cardNumber, decimal amount)
+    public void Withdraw(string cardNumber, decimal amount)
     {
-        await _bankService.Withdraw(cardNumber, amount);
+        _bankService.Withdraw(cardNumber, amount);
 
         TotalAmount -= amount;
     }
 
-    public async Task AddAmount(string cardNumber, decimal amount)
+    public void AddAmount(string cardNumber, decimal amount)
     {
-        await _bankService.AddAmount(cardNumber, amount);
+        _bankService.AddAmount(cardNumber, amount);
 
         TotalAmount += amount;
     }
 
-    public async Task Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
+    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
     {
-        await _bankService.Tranzaction(cardNumberSender, cardNumberReceiver, amount);
+        _bankService.Tranzaction(cardNumberSender, cardNumberReceiver, amount);
     }
 }
     
