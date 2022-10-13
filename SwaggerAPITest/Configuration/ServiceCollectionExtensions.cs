@@ -1,4 +1,5 @@
-﻿using SwaggerAPITest.Services;
+﻿using SwaggerAPITest.DataBase;
+using SwaggerAPITest.Services;
 using SwaggerAPITest.Services.Interfaces;
 
 namespace SwaggerAPITest.Configuration;
@@ -7,6 +8,7 @@ public static class ServiceCollectionExtensions
 {
     public static void ConfigureService(this IServiceCollection services)
     {
+        services.AddSingleton<BankDbContext>();
         services.AddSingleton<AtmService>();
         services.AddSingleton<IAtmEventBroker, AtmEventBroker>();
         services.AddSingleton<IBankService, BankService>();

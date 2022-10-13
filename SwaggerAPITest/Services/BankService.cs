@@ -1,4 +1,5 @@
-﻿using SwaggerAPITest.Models;
+﻿using SwaggerAPITest.DataBase;
+using SwaggerAPITest.Models;
 using SwaggerAPITest.Services.Interfaces;
 using static SwaggerAPITest.Models.CardBrand;
 
@@ -12,10 +13,15 @@ public class BankService : IBankService
         new(CardBrands.MasterCard, 300)
     };
 
-    public IReadOnlyCollection<Card> cards = new List<Card> {
-        new("4444333322221111", "Troy Mcfarland", "edyDfd5A", CardBrands.Visa, 800),
-        new ("5200000000001005", "Levi Downs", "teEAxnqg", CardBrands.MasterCard, 400)
-    };
+    public IReadOnlyCollection<Card> cards;
+
+    public BankService(BankDbContext context)
+    {
+        using (context)
+        {
+            cards = context.Cards.ToList();
+        }
+    }
 
     public bool IsCardExist(string cardNumber) => cards.Any(x => x.CardNumber == cardNumber);
 
