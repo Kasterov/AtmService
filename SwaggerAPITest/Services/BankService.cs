@@ -13,23 +13,20 @@ public class BankService : IBankService
         new(CardBrands.MasterCard, 300)
     };
 
-    public IReadOnlyCollection<Card> cards;
+    private readonly BankDbContext _dbContext;
 
     public BankService(BankDbContext context)
     {
-        using (context)
-        {
-            cards = context.Cards.ToList();
-        }
+        _dbContext = context;
     }
 
-    public bool IsCardExist(string cardNumber) => cards.Any(x => x.CardNumber == cardNumber);
+    public bool IsCardExist(string cardNumber) => _dbContext.Cards.Any(x => x.CardNumber == cardNumber);
 
     public bool VerifyPassword(string cardNumber, string password)
         => GetCard(cardNumber)
         .IsPasswordEqual(password);
 
-    public Card GetCard(string cardNumber) => cards.Single(x => x.CardNumber == cardNumber);
+    public Card GetCard(string cardNumber) => _dbContext.Cards.Single(x => x.CardNumber == cardNumber);
 
     public decimal GetCardBalance(string cardNumber)
         => GetCard(cardNumber)
@@ -38,16 +35,16 @@ public class BankService : IBankService
     private static decimal GetWithdrawLimit(CardBrands cardBrand)
     {
         return WithdrawLimits.First(x => x.CardBrand == cardBrand).Amount;
-    } 
+    }
 
-    public void Withdraw(string cardNumber, decimal amount)
+    public async void Withdraw(string cardNumber, decimal amount)
     {
         var card = GetCard(cardNumber);
         var limit = GetWithdrawLimit(card.CardBrand);
 
         if (amount <= 0)
         {
-             throw new ArgumentOutOfRangeException("Amount for withdraw less than 0 or equal!");
+            throw new ArgumentOutOfRangeException("Amount for withdraw less than 0 or equal!");
         }
 
         if (amount > card.Balance)
@@ -55,23 +52,26 @@ public class BankService : IBankService
             throw new ArgumentOutOfRangeException("Amount for withdraw biger than current balance!");
         }
 
-        if (amount  > limit)
+        if (amount > limit)
         {
             throw new InvalidOperationException($"One time {card.CardBrand} withdraw limit is {limit}");
         }
 
         card.Withdraw(amount);
+        await _dbContext.SaveChangesAsync();
     }
 
-    public void AddAmount(string cardNumber, decimal amount)
+    public async void AddAmount(string cardNumber, decimal amount)
     {
         var cardToAdd = GetCard(cardNumber);
         cardToAdd.AddAmount(amount);
+        await _dbContext.SaveChangesAsync();
     }
-    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
+    public async void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount)
     {
         Withdraw(cardNumberSender, amount);
         AddAmount(cardNumberReceiver, amount);
+        await _dbContext.SaveChangesAsync();
     }
 };
 
