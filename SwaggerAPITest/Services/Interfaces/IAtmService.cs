@@ -5,10 +5,10 @@
         public bool IsCardExist(string cardNumber);
         public bool VerifyPassword(string cardNumber, string cardPassword);
 
-        public void Withdraw(string cardNumber, decimal amount);
+        public Task Withdraw(string cardNumber, decimal amount);
         public decimal GetCardBalance(string cardNumber);
 
-        public void AddAmount(string cardNumber, decimal amount);
-        public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount);
+        public Task AddAmount(string cardNumber, decimal amount);
+        public Task Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount);
     }
 }

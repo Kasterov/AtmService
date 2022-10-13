@@ -12,9 +12,9 @@ public interface IBankService
 
     public decimal GetCardBalance(string cardNumber);
 
-    public void Withdraw(string cardNumber, decimal amount);
+    public Task Withdraw(string cardNumber, decimal amount);
 
-    public void AddAmount(string cardNumber, decimal amount);
+    public Task AddAmount(string cardNumber, decimal amount);
 
-    public void Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount);
+    public Task Tranzaction(string cardNumberSender, string cardNumberReceiver, decimal amount);
 }
