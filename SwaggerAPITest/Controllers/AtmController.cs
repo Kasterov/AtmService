@@ -9,53 +9,67 @@ namespace SwaggerAPITest.Controllers;
 [Route("/api/[controller]")]
 public class AtmController : ControllerBase
 {
+    private readonly IAtmLinkGenerator _atmLinkGenerator;
     private readonly IAtmService _atmService;
 
-    public AtmController(IAtmService atmService)
+    public AtmController(IAtmService atmService, IAtmLinkGenerator atmLinkGenerator)
     {
+        _atmLinkGenerator = atmLinkGenerator;
         _atmService = atmService;
     }
 
     [HttpGet("cards/{cardNumber}/init")]
     public IActionResult Init([FromRoute] string cardNumber)
     {
+        var links = _atmLinkGenerator.GetAssociatedEndpoints(HttpContext, nameof(Init));
+
         return _atmService.IsCardExist(cardNumber)
-            ? Ok(new AtmResponse("Your card is in system!"))
-            : NotFound(new AtmResponse("Your card is NOT in system!"));
+            ? Ok(new AtmResponce("Your card is in system!", links))
+            : NotFound(new AtmResponce("Your card is NOT in system!"));
     }
 
     [HttpPost("cards/authorize")]
     public IActionResult Authorize([FromBody] CardAuthorizeRequest request)
     {
+        var links = _atmLinkGenerator.GetAssociatedEndpoints(HttpContext, nameof(Authorize), new { request.CardNumber });
+
         return _atmService.VerifyPassword(request.CardNumber, request.Password)
-            ? Ok(new AtmResponse("Authorization is successful!"))
-            : NotFound(new AtmResponse("Authorization is NOT successful!"));
+            ? Ok(new AtmResponce("Authorization is successful!", links))
+            : NotFound(new AtmResponce("Authorization is NOT successful!"));
     }
 
     [HttpPost("cards/addAmount")]
     public IActionResult AddAmount([FromBody] CardAddAmountRequest request)
     {
+        var links = _atmLinkGenerator.GetAssociatedEndpoints(HttpContext, nameof(AddAmount), new { request.CardNumber });
+
         _atmService.AddAmount(request.CardNumber, request.Amount);
-        return Ok(new AtmResponse($"AddAmount is successful! +{request.Amount}"));
+        return Ok(new AtmResponce($"AddAmount is successful! +{request.Amount}", links));
     }
 
     [HttpPost("cards/withdraw")]
     public IActionResult Withdraw([FromBody] CardWithdrawRequest request)
     {
+        var links = _atmLinkGenerator.GetAssociatedEndpoints(HttpContext, nameof(Withdraw), new { request.CardNumber });
+
         _atmService.Withdraw(request.CardNumber,request.Amount);
-        return Ok(new AtmResponse($"Withdraw successful! -{request.Amount}"));
+        return Ok(new AtmResponce($"Withdraw successful! -{request.Amount}", links));
     }
 
     [HttpGet("cards/{cardNumber}/getBalance")]
     public IActionResult GetBalance([FromRoute] string cardNumber)
     {
-        return Ok(new AtmResponse($"GetBalance is successful! Balance:{_atmService.GetCardBalance(cardNumber)}"));
+        var links = _atmLinkGenerator.GetAssociatedEndpoints(HttpContext, nameof(GetBalance));
+
+        return Ok(new AtmResponce($"GetBalance is successful! Balance:{_atmService.GetCardBalance(cardNumber)}", links));
     }
 
     [HttpPost("cards/tranzaction")]
     public IActionResult Tranzaction([FromBody] CardTranzactionRequest request)
     {
+        var links = _atmLinkGenerator.GetAssociatedEndpoints(HttpContext, nameof(Tranzaction), new { request.CardNumberSender});
+
         _atmService.Tranzaction(request.CardNumberSender, request.CardNumberReceiver, request.Amount);
-        return Ok(new AtmResponse($"Tranzaction is successful!Amount sent: {request.Amount} to card: {request.CardNumberReceiver}"));
+        return Ok(new AtmResponce($"Tranzaction is successful!Amount sent: {request.Amount} to card: {request.CardNumberReceiver}", links));
     }
 }

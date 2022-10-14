@@ -63,6 +63,11 @@ public class BankService : IBankService
 
     public void AddAmount(string cardNumber, decimal amount)
     {
+        if (amount <= 0)
+        {
+            throw new ArgumentOutOfRangeException("Amount for add less than 0 or equal!");
+        }
+
         var cardToAdd = GetCard(cardNumber);
         cardToAdd.AddAmount(amount);
         _dbContext.SaveChangesAsync();
