@@ -1,4 +1,6 @@
-﻿using SwaggerAPITest.Controllers.Common;
+﻿using SwaggerAPITest.Controllers;
+using SwaggerAPITest.Controllers.Common;
+using SwaggerAPITest.Extensions;
 using SwaggerAPITest.Services.Interfaces;
 
 namespace SwaggerAPITest.Services;
