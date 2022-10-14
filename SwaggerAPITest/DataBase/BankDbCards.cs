@@ -1,5 +1,4 @@
 ﻿using SwaggerAPITest.Models;
-using static SwaggerAPITest.DataBase.BankDbContext;
 using static SwaggerAPITest.Models.CardBrand;
 
 namespace SwaggerAPITest.DataBase;
@@ -13,7 +12,6 @@ public class BankDbCards
         if (!db.Cards.Any())
         {
             Card[] cards = {
-
                 new("4444333322221111", "Troy Mcfarland", "edyDfd5A", CardBrands.Visa, 800),
                 new("5200000000001005", "Levi Downs", "teEAxnqg", CardBrands.MasterCard, 400)
             };
