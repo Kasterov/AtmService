@@ -28,8 +28,8 @@ public sealed class AtmLinkGenerator : IAtmLinkGenerator
             {
                 _linkGenerator.GetAssociatedEndpoint(httpContext, HttpMethod.Get, nameof(AtmController.GetBalance), values),
                 _linkGenerator.GetAssociatedEndpoint(httpContext, HttpMethod.Post, nameof(AtmController.Withdraw)),
-                _linkGenerator.GetAssociatedEndpoint(httpContext, HttpMethod.Post, nameof(AtmController.AddAmount), values),
-                _linkGenerator.GetAssociatedEndpoint(httpContext, HttpMethod.Post, nameof(AtmController.Tranzaction), values),
+                _linkGenerator.GetAssociatedEndpoint(httpContext, HttpMethod.Post, nameof(AtmController.AddAmount)),
+                _linkGenerator.GetAssociatedEndpoint(httpContext, HttpMethod.Post, nameof(AtmController.Tranzaction)),
             },
             _ => throw new ArgumentOutOfRangeException("Invalid data!")
         };
